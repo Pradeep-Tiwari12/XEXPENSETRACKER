@@ -5,13 +5,13 @@
 .app {
   min-height: 100vh;
   background: #303030;
-  color: #ffffff;
+  color: #fff;
   padding-bottom: 40px;
 }
 
 .header {
   max-width: 1400px;
-  margin: 0 auto;
+  margin: auto;
   padding: 12px 22px 8px;
 }
 
@@ -23,12 +23,10 @@
 
 .container {
   width: min(1400px, calc(100% - 32px));
-  margin: 0 auto;
+  margin: auto;
 }
 
-/* =========================
-   SUMMARY
-========================= */
+/* ================= SUMMARY ================= */
 
 .summary-section {
   min-height: 170px;
@@ -45,7 +43,7 @@
 .summary-card {
   height: 124px;
   border-radius: 8px;
-  background: #999999;
+  background: #999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,16 +73,12 @@
 .income-button,
 .expense-button {
   border: none;
-  color: white;
+  color: #fff;
   padding: 8px 18px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: 0.2s ease;
+  transition: 0.2s;
 }
 
 .income-button {
@@ -105,9 +99,7 @@
   transform: translateY(-1px);
 }
 
-/* =========================
-   PIE CHART
-========================= */
+/* ================= PIE ================= */
 
 .pie-wrapper {
   height: 140px;
@@ -119,11 +111,10 @@
 .empty-chart {
   height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #aaa;
-  gap: 8px;
+  font-size: 12px;
 }
 
 .chart-legend {
@@ -150,9 +141,7 @@
   display: inline-block;
 }
 
-/* =========================
-   CONTENT
-========================= */
+/* ================= CONTENT ================= */
 
 .content-grid {
   margin-top: 18px;
@@ -170,7 +159,7 @@
 
 .transactions-container,
 .bar-chart-container {
-  background: #ffffff;
+  background: #fff;
   color: #444;
   border-radius: 6px;
   min-height: 145px;
@@ -194,7 +183,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 8px;
+  padding: 8px;
   border-bottom: 1px solid #ddd;
   gap: 10px;
 }
@@ -213,7 +202,7 @@
 .category-icon {
   width: 32px;
   height: 32px;
-  background: #eeeeee;
+  background: #eee;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -253,7 +242,6 @@
   color: #f3a500;
   font-weight: 700;
   font-size: 12px;
-  margin-right: 3px;
 }
 
 .icon-button {
@@ -266,7 +254,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: 0.2s ease;
 }
 
 .icon-button.delete {
@@ -286,9 +273,7 @@
   padding: 8px;
 }
 
-/* =========================
-   MODAL
-========================= */
+/* ================= MODAL ================= */
 
 .modal-overlay {
   position: fixed;
@@ -310,19 +295,6 @@
   padding: 24px;
   position: relative;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
-  animation: modalOpen 0.18s ease-out;
-}
-
-@keyframes modalOpen {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .modal-close {
@@ -372,7 +344,6 @@
   outline: none;
   font-size: 13px;
   color: #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 }
 
 .form-group input:focus,
@@ -411,7 +382,6 @@
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
-  transition: 0.2s ease;
 }
 
 .primary-button {
@@ -419,18 +389,12 @@
   flex: 1;
 }
 
-.income-submit {
-  background: #f3ad28;
-}
-
-.income-submit:hover {
-  background: #dc9515;
-}
-
+.income-submit,
 .expense-submit {
   background: #f3ad28;
 }
 
+.income-submit:hover,
 .expense-submit:hover {
   background: #dc9515;
 }
@@ -440,13 +404,7 @@
   color: #444;
 }
 
-.secondary-button:hover {
-  background: #d7d7d7;
-}
-
-/* =========================
-   RESPONSIVE TABLET
-========================= */
+/* ================= TABLET ================= */
 
 @media (max-width: 900px) {
   .summary-section {
@@ -469,9 +427,7 @@
   }
 }
 
-/* =========================
-   RESPONSIVE MOBILE
-========================= */
+/* ================= MOBILE ================= */
 
 @media (max-width: 600px) {
   .app {
@@ -526,10 +482,6 @@
     margin-left: 3px;
   }
 
-  .transactions-container {
-    padding: 5px;
-  }
-
   .transaction {
     padding: 8px 5px;
   }
@@ -574,9 +526,7 @@
   }
 }
 
-/* =========================
-   VERY SMALL MOBILE
-========================= */
+/* ================= VERY SMALL MOBILE ================= */
 
 @media (max-width: 380px) {
   .transaction-left {

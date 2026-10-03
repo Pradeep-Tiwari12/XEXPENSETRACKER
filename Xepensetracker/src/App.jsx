@@ -13,15 +13,13 @@ import {
 } from "recharts";
 
 import {
-  FaPlus,
-  FaEdit,
-  FaTrash,
-  FaWallet,
   FaUtensils,
   FaPlane,
   FaGamepad,
   FaTimes,
   FaRupeeSign,
+  FaEdit,
+  FaTrash,
 } from "react-icons/fa";
 
 import "./App.css";
@@ -65,7 +63,10 @@ function App() {
 
     try {
       const parsedExpenses = JSON.parse(savedExpenses);
-      return Array.isArray(parsedExpenses) ? parsedExpenses : [];
+
+      return Array.isArray(parsedExpenses)
+        ? parsedExpenses
+        : [];
     } catch {
       return [];
     }
@@ -74,12 +75,15 @@ function App() {
   const [modalType, setModalType] = useState(null);
   const [editingExpense, setEditingExpense] = useState(null);
 
-  // Persist wallet balance
+  /* ---------------- LOCAL STORAGE ---------------- */
+
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.balance, String(balance));
+    localStorage.setItem(
+      STORAGE_KEYS.balance,
+      String(balance)
+    );
   }, [balance]);
 
-  // Persist expenses
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEYS.expenses,
@@ -87,30 +91,59 @@ function App() {
     );
   }, [expenses]);
 
+  /* ---------------- TOTAL EXPENSE ---------------- */
+
   const totalExpenses = useMemo(() => {
     return expenses.reduce(
-      (total, expense) => total + Number(expense.amount),
+      (total, expense) =>
+        total + Number(expense.amount),
       0
     );
   }, [expenses]);
 
+  /* ---------------- PIE CHART ---------------- */
+
   const pieData = useMemo(() => {
-    return CATEGORIES.map((category) => ({
-      name: category,
-      value: expenses
-        .filter((expense) => expense.category === category)
-        .reduce((total, expense) => total + Number(expense.amount), 0),
-    })).filter((item) => item.value > 0);
+    return CATEGORIES.map((category) => {
+      const total = expenses
+        .filter(
+          (expense) => expense.category === category
+        )
+        .reduce(
+          (sum, expense) =>
+            sum + Number(expense.amount),
+          0
+        );
+
+      return {
+        name: category,
+        value: total,
+      };
+    }).filter((item) => item.value > 0);
   }, [expenses]);
 
+  /* ---------------- BAR CHART ---------------- */
+
   const barData = useMemo(() => {
-    return CATEGORIES.map((category) => ({
-      category,
-      amount: expenses
-        .filter((expense) => expense.category === category)
-        .reduce((total, expense) => total + Number(expense.amount), 0),
-    }));
+    return CATEGORIES.map((category) => {
+      const total = expenses
+        .filter(
+          (expense) => expense.category === category
+        )
+        .reduce(
+          (sum, expense) =>
+            sum + Number(expense.amount),
+          0
+        );
+
+      return {
+        category,
+        amount: total,
+      };
+    });
   }, [expenses]);
+
+  /* ---------------- MODALS ---------------- */
 
   const openAddBalanceModal = () => {
     setModalType("balance");
@@ -131,6 +164,8 @@ function App() {
     setEditingExpense(null);
   };
 
+  /* ---------------- ADD BALANCE ---------------- */
+
   const handleAddBalance = (amount) => {
     const numericAmount = Number(amount);
 
@@ -139,15 +174,23 @@ function App() {
       return;
     }
 
-    setBalance((currentBalance) => currentBalance + numericAmount);
+    setBalance(
+      (currentBalance) =>
+        currentBalance + numericAmount
+    );
 
     closeModal();
   };
 
-  const handleAddExpense = (formData) => {
-    const amount = Number(formData.amount);
+  /* ---------------- ADD / EDIT EXPENSE ---------------- */
 
-    if (!formData.title.trim()) {
+  const handleExpenseSubmit = (formData) => {
+    const title = formData.title.trim();
+    const amount = Number(formData.amount);
+    const category = formData.category;
+    const date = formData.date;
+
+    if (!title) {
       alert("Please enter expense title.");
       return;
     }
@@ -157,29 +200,32 @@ function App() {
       return;
     }
 
-    if (!formData.category) {
+    if (!category) {
       alert("Please select a category.");
       return;
     }
 
-    if (!formData.date) {
+    if (!date) {
       alert("Please select a date.");
       return;
     }
 
-    // ADD EXPENSE
+    /* -------- ADD -------- */
+
     if (!editingExpense) {
       if (amount > balance) {
-        alert("You cannot spend more than your available wallet balance.");
+        alert(
+          "You cannot spend more than your available wallet balance."
+        );
         return;
       }
 
       const newExpense = {
         id: Date.now(),
-        title: formData.title.trim(),
+        title,
         amount,
-        category: formData.category,
-        date: formData.date,
+        category,
+        date,
       };
 
       setExpenses((currentExpenses) => [
@@ -187,32 +233,39 @@ function App() {
         ...currentExpenses,
       ]);
 
-      setBalance((currentBalance) => currentBalance - amount);
+      setBalance(
+        (currentBalance) =>
+          currentBalance - amount
+      );
 
       closeModal();
+
       return;
     }
 
-    // EDIT EXPENSE
+    /* -------- EDIT -------- */
 
-    const oldAmount = Number(editingExpense.amount);
+    const oldAmount = Number(
+      editingExpense.amount
+    );
 
-    // During edit, old expense amount becomes available again.
-    const availableBalance = balance + oldAmount;
+    const availableBalance =
+      balance + oldAmount;
 
     if (amount > availableBalance) {
       alert(
         "You cannot set this expense because it exceeds your available wallet balance."
       );
+
       return;
     }
 
     const updatedExpense = {
       ...editingExpense,
-      title: formData.title.trim(),
+      title,
       amount,
-      category: formData.category,
-      date: formData.date,
+      category,
+      date,
     };
 
     setExpenses((currentExpenses) =>
@@ -223,10 +276,14 @@ function App() {
       )
     );
 
-    setBalance(availableBalance - amount);
+    setBalance(
+      availableBalance - amount
+    );
 
     closeModal();
   };
+
+  /* ---------------- DELETE EXPENSE ---------------- */
 
   const handleDeleteExpense = (expense) => {
     const confirmed = window.confirm(
@@ -238,13 +295,42 @@ function App() {
     }
 
     setExpenses((currentExpenses) =>
-      currentExpenses.filter((item) => item.id !== expense.id)
+      currentExpenses.filter(
+        (item) => item.id !== expense.id
+      )
     );
 
-    // Deleted expense amount comes back to wallet.
-    setBalance((currentBalance) => {
-      return currentBalance + Number(expense.amount);
-    });
+    setBalance(
+      (currentBalance) =>
+        currentBalance + Number(expense.amount)
+    );
+  };
+
+  /* ---------------- HELPERS ---------------- */
+
+  const formatAmount = (amount) => {
+    return `₹${Number(amount).toLocaleString(
+      "en-IN"
+    )}`;
+  };
+
+  const formatDate = (date) => {
+    if (!date) {
+      return "";
+    }
+
+    const dateObject = new Date(
+      `${date}T00:00:00`
+    );
+
+    return dateObject.toLocaleDateString(
+      "en-IN",
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }
+    );
   };
 
   const getCategoryIcon = (category) => {
@@ -259,32 +345,20 @@ function App() {
     return <FaGamepad />;
   };
 
-  const formatAmount = (amount) => {
-    return `₹${Number(amount).toLocaleString("en-IN")}`;
-  };
-
-  const formatDate = (date) => {
-    if (!date) return "";
-
-    const dateObject = new Date(`${date}T00:00:00`);
-
-    return dateObject.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
   return (
     <div className="app">
+      {/* HEADER */}
+
       <header className="header">
         <h1>Expense Tracker</h1>
       </header>
 
       <main className="container">
-        {/* TOP SUMMARY */}
+        {/* ================= TOP SECTION ================= */}
+
         <section className="summary-section">
-          {/* Wallet */}
+          {/* WALLET */}
+
           <div className="summary-card wallet-card">
             <div className="summary-content">
               <h2>
@@ -298,13 +372,13 @@ function App() {
                 className="income-button"
                 onClick={openAddBalanceModal}
               >
-                <FaPlus />
-                Add Income
+                + Add Income
               </button>
             </div>
           </div>
 
-          {/* Expenses */}
+          {/* EXPENSE */}
+
           <div className="summary-card expense-card">
             <div className="summary-content">
               <h2>
@@ -318,16 +392,19 @@ function App() {
                 className="expense-button"
                 onClick={openAddExpenseModal}
               >
-                <FaPlus />
-                Add Expense
+                + Add Expense
               </button>
             </div>
           </div>
 
-          {/* Pie Chart */}
+          {/* PIE CHART */}
+
           <div className="pie-wrapper">
             {pieData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer
+                width="100%"
+                height="100%"
+              >
                 <PieChart>
                   <Pie
                     data={pieData}
@@ -335,42 +412,52 @@ function App() {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius="75%"
-                    innerRadius="0%"
-                    paddingAngle={1}
+                    outerRadius="72%"
                     labelLine={false}
                     label={({ percent }) =>
-                      `${(percent * 100).toFixed(0)}%`
+                      `${(
+                        percent * 100
+                      ).toFixed(0)}%`
                     }
                   >
                     {pieData.map((entry) => (
                       <Cell
                         key={entry.name}
-                        fill={CATEGORY_COLORS[entry.name]}
+                        fill={
+                          CATEGORY_COLORS[
+                            entry.name
+                          ]
+                        }
                       />
                     ))}
                   </Pie>
 
                   <Tooltip
-                    formatter={(value) => formatAmount(value)}
+                    formatter={(value) =>
+                      formatAmount(value)
+                    }
                   />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
               <div className="empty-chart">
-                <FaWallet />
                 <span>No expenses yet</span>
               </div>
             )}
 
             <div className="chart-legend">
               {CATEGORIES.map((category) => (
-                <div className="legend-item" key={category}>
+                <div
+                  className="legend-item"
+                  key={category}
+                >
                   <span
                     className="legend-color"
                     style={{
                       backgroundColor:
-                        CATEGORY_COLORS[category],
+                        CATEGORY_COLORS[
+                          category
+                        ],
                     }}
                   />
 
@@ -381,9 +468,11 @@ function App() {
           </div>
         </section>
 
-        {/* TRANSACTIONS + BAR CHART */}
+        {/* ================= BOTTOM SECTION ================= */}
+
         <section className="content-grid">
-          {/* Recent Transactions */}
+          {/* RECENT TRANSACTIONS */}
+
           <div className="transactions-section">
             <h2 className="section-title">
               Recent Transactions
@@ -402,27 +491,39 @@ function App() {
                   >
                     <div className="transaction-left">
                       <div className="category-icon">
-                        {getCategoryIcon(expense.category)}
+                        {getCategoryIcon(
+                          expense.category
+                        )}
                       </div>
 
                       <div className="transaction-info">
-                        <h3>{expense.title}</h3>
+                        <h3>
+                          {expense.title}
+                        </h3>
 
-                        <p>{formatDate(expense.date)}</p>
+                        <p>
+                          {formatDate(
+                            expense.date
+                          )}
+                        </p>
                       </div>
                     </div>
 
                     <div className="transaction-right">
                       <span className="transaction-amount">
-                        {formatAmount(expense.amount)}
+                        {formatAmount(
+                          expense.amount
+                        )}
                       </span>
 
                       <button
                         className="icon-button delete"
                         onClick={() =>
-                          handleDeleteExpense(expense)
+                          handleDeleteExpense(
+                            expense
+                          )
                         }
-                        title="Delete expense"
+                        aria-label="Delete expense"
                       >
                         <FaTrash />
                       </button>
@@ -432,7 +533,7 @@ function App() {
                         onClick={() =>
                           openEditModal(expense)
                         }
-                        title="Edit expense"
+                        aria-label="Edit expense"
                       >
                         <FaEdit />
                       </button>
@@ -443,14 +544,18 @@ function App() {
             </div>
           </div>
 
-          {/* Top Expenses */}
+          {/* TOP EXPENSES */}
+
           <div className="top-expenses-section">
             <h2 className="section-title">
               Top Expenses
             </h2>
 
             <div className="bar-chart-container">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer
+                width="100%"
+                height="100%"
+              >
                 <BarChart
                   data={barData}
                   layout="vertical"
@@ -468,7 +573,9 @@ function App() {
 
                   <XAxis
                     type="number"
-                    tickFormatter={(value) => `₹${value}`}
+                    tickFormatter={(value) =>
+                      `₹${value}`
+                    }
                   />
 
                   <YAxis
@@ -486,7 +593,12 @@ function App() {
                   <Bar
                     dataKey="amount"
                     fill="#7f79d9"
-                    radius={[0, 4, 4, 0]}
+                    radius={[
+                      0,
+                      4,
+                      4,
+                      0,
+                    ]}
                     barSize={18}
                   />
                 </BarChart>
@@ -496,7 +608,8 @@ function App() {
         </section>
       </main>
 
-      {/* ADD BALANCE MODAL */}
+      {/* ================= BALANCE MODAL ================= */}
+
       {modalType === "balance" && (
         <ModalOverlay onClose={closeModal}>
           <BalanceForm
@@ -506,12 +619,13 @@ function App() {
         </ModalOverlay>
       )}
 
-      {/* ADD / EDIT EXPENSE MODAL */}
+      {/* ================= EXPENSE MODAL ================= */}
+
       {modalType === "expense" && (
         <ModalOverlay onClose={closeModal}>
           <ExpenseForm
             expense={editingExpense}
-            onSubmit={handleAddExpense}
+            onSubmit={handleExpenseSubmit}
             onCancel={closeModal}
           />
         </ModalOverlay>
@@ -520,14 +634,24 @@ function App() {
   );
 }
 
-/* ---------------- MODAL ---------------- */
+/* =========================================================
+   MODAL
+========================================================= */
 
-function ModalOverlay({ children, onClose }) {
+function ModalOverlay({
+  children,
+  onClose,
+}) {
   return (
-    <div className="modal-overlay" onMouseDown={onClose}>
+    <div
+      className="modal-overlay"
+      onMouseDown={onClose}
+    >
       <div
         className="modal-container"
-        onMouseDown={(event) => event.stopPropagation()}
+        onMouseDown={(event) =>
+          event.stopPropagation()
+        }
       >
         <button
           className="modal-close"
@@ -543,9 +667,14 @@ function ModalOverlay({ children, onClose }) {
   );
 }
 
-/* ---------------- BALANCE FORM ---------------- */
+/* =========================================================
+   BALANCE FORM
+========================================================= */
 
-function BalanceForm({ onSubmit, onCancel }) {
+function BalanceForm({
+  onSubmit,
+  onCancel,
+}) {
   const [amount, setAmount] = useState("");
 
   const handleSubmit = (event) => {
@@ -555,7 +684,10 @@ function BalanceForm({ onSubmit, onCancel }) {
   };
 
   return (
-    <form className="modal-form" onSubmit={handleSubmit}>
+    <form
+      className="modal-form"
+      onSubmit={handleSubmit}
+    >
       <h2>Add Balance</h2>
 
       <div className="form-group">
@@ -601,7 +733,9 @@ function BalanceForm({ onSubmit, onCancel }) {
   );
 }
 
-/* ---------------- EXPENSE FORM ---------------- */
+/* =========================================================
+   EXPENSE FORM
+========================================================= */
 
 function ExpenseForm({
   expense,
@@ -631,15 +765,23 @@ function ExpenseForm({
   };
 
   return (
-    <form className="modal-form" onSubmit={handleSubmit}>
+    <form
+      className="modal-form"
+      onSubmit={handleSubmit}
+    >
       <h2>
-        {expense ? "Edit Expense" : "Add Expenses"}
+        {expense
+          ? "Edit Expense"
+          : "Add Expenses"}
       </h2>
 
       <div className="form-grid">
-        {/* Title */}
+        {/* TITLE */}
+
         <div className="form-group">
-          <label htmlFor="title">Title</label>
+          <label htmlFor="title">
+            Title
+          </label>
 
           <input
             id="title"
@@ -651,9 +793,12 @@ function ExpenseForm({
           />
         </div>
 
-        {/* Amount */}
+        {/* AMOUNT */}
+
         <div className="form-group">
-          <label htmlFor="amount">Price</label>
+          <label htmlFor="amount">
+            Price
+          </label>
 
           <input
             id="amount"
@@ -667,9 +812,12 @@ function ExpenseForm({
           />
         </div>
 
-        {/* Category */}
+        {/* CATEGORY */}
+
         <div className="form-group">
-          <label htmlFor="category">Category</label>
+          <label htmlFor="category">
+            Category
+          </label>
 
           <select
             id="category"
@@ -677,19 +825,29 @@ function ExpenseForm({
             value={formData.category}
             onChange={handleChange}
           >
-            <option value="">Select category</option>
+            <option value="">
+              Select category
+            </option>
 
-            {CATEGORIES.map((category) => (
-              <option value={category} key={category}>
-                {category}
-              </option>
-            ))}
+            {CATEGORIES.map(
+              (category) => (
+                <option
+                  value={category}
+                  key={category}
+                >
+                  {category}
+                </option>
+              )
+            )}
           </select>
         </div>
 
-        {/* Date */}
+        {/* DATE */}
+
         <div className="form-group">
-          <label htmlFor="date">Date</label>
+          <label htmlFor="date">
+            Date
+          </label>
 
           <input
             id="date"
@@ -706,7 +864,9 @@ function ExpenseForm({
           type="submit"
           className="primary-button expense-submit"
         >
-          {expense ? "Update Expense" : "Add Expense"}
+          {expense
+            ? "Update Expense"
+            : "Add Expense"}
         </button>
 
         <button
