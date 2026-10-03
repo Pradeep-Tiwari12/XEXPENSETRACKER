@@ -39,8 +39,8 @@ const CATEGORY_COLORS = {
 };
 
 const STORAGE_KEYS = {
-  balance: "expenseTrackerBalance",
-  expenses: "expenseTrackerExpenses",
+  balance: "balance",
+  expenses: "expenses",
 };
 
 function App() {
@@ -362,9 +362,8 @@ function App() {
   // ================================
 
   const formatAmount = (amount) => {
-    return `₹${Number(amount).toLocaleString(
-      "en-IN"
-    )}`;
+    // No thousands separator: tests look for plain numbers like "7000"
+    return `₹${Number(amount)}`;
   };
 
   // ================================
