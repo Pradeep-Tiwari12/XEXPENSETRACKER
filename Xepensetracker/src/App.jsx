@@ -26,7 +26,11 @@ import "./App.css";
 
 const INITIAL_BALANCE = 5000;
 
-const CATEGORIES = ["Food", "Entertainment", "Travel"];
+const CATEGORIES = [
+  "Food",
+  "Entertainment",
+  "Travel",
+];
 
 const CATEGORY_COLORS = {
   Food: "#9b00ff",
@@ -40,8 +44,14 @@ const STORAGE_KEYS = {
 };
 
 function App() {
+  // ================================
+  // BALANCE
+  // ================================
+
   const [balance, setBalance] = useState(() => {
-    const savedBalance = localStorage.getItem(STORAGE_KEYS.balance);
+    const savedBalance = localStorage.getItem(
+      STORAGE_KEYS.balance
+    );
 
     if (savedBalance === null) {
       return INITIAL_BALANCE;
@@ -54,15 +64,22 @@ function App() {
       : INITIAL_BALANCE;
   });
 
+  // ================================
+  // EXPENSES
+  // ================================
+
   const [expenses, setExpenses] = useState(() => {
-    const savedExpenses = localStorage.getItem(STORAGE_KEYS.expenses);
+    const savedExpenses = localStorage.getItem(
+      STORAGE_KEYS.expenses
+    );
 
     if (!savedExpenses) {
       return [];
     }
 
     try {
-      const parsedExpenses = JSON.parse(savedExpenses);
+      const parsedExpenses =
+        JSON.parse(savedExpenses);
 
       return Array.isArray(parsedExpenses)
         ? parsedExpenses
@@ -73,9 +90,12 @@ function App() {
   });
 
   const [modalType, setModalType] = useState(null);
-  const [editingExpense, setEditingExpense] = useState(null);
+  const [editingExpense, setEditingExpense] =
+    useState(null);
 
-  /* ---------------- LOCAL STORAGE ---------------- */
+  // ================================
+  // LOCAL STORAGE
+  // ================================
 
   useEffect(() => {
     localStorage.setItem(
@@ -91,7 +111,9 @@ function App() {
     );
   }, [expenses]);
 
-  /* ---------------- TOTAL EXPENSE ---------------- */
+  // ================================
+  // TOTAL EXPENSE
+  // ================================
 
   const totalExpenses = useMemo(() => {
     return expenses.reduce(
@@ -101,13 +123,16 @@ function App() {
     );
   }, [expenses]);
 
-  /* ---------------- PIE CHART ---------------- */
+  // ================================
+  // PIE CHART DATA
+  // ================================
 
   const pieData = useMemo(() => {
     return CATEGORIES.map((category) => {
       const total = expenses
         .filter(
-          (expense) => expense.category === category
+          (expense) =>
+            expense.category === category
         )
         .reduce(
           (sum, expense) =>
@@ -122,13 +147,16 @@ function App() {
     }).filter((item) => item.value > 0);
   }, [expenses]);
 
-  /* ---------------- BAR CHART ---------------- */
+  // ================================
+  // BAR CHART DATA
+  // ================================
 
   const barData = useMemo(() => {
     return CATEGORIES.map((category) => {
       const total = expenses
         .filter(
-          (expense) => expense.category === category
+          (expense) =>
+            expense.category === category
         )
         .reduce(
           (sum, expense) =>
@@ -143,7 +171,9 @@ function App() {
     });
   }, [expenses]);
 
-  /* ---------------- MODALS ---------------- */
+  // ================================
+  // MODALS
+  // ================================
 
   const openAddBalanceModal = () => {
     setModalType("balance");
@@ -164,7 +194,9 @@ function App() {
     setEditingExpense(null);
   };
 
-  /* ---------------- ADD BALANCE ---------------- */
+  // ================================
+  // ADD BALANCE
+  // ================================
 
   const handleAddBalance = (amount) => {
     const numericAmount = Number(amount);
@@ -182,13 +214,23 @@ function App() {
     closeModal();
   };
 
-  /* ---------------- ADD / EDIT EXPENSE ---------------- */
+  // ================================
+  // ADD / EDIT EXPENSE
+  // ================================
 
   const handleExpenseSubmit = (formData) => {
     const title = formData.title.trim();
-    const amount = Number(formData.amount);
+
+    // IMPORTANT:
+    // Cypress expects name="price"
+    const amount = Number(formData.price);
+
     const category = formData.category;
     const date = formData.date;
+
+    // ----------------------------
+    // VALIDATION
+    // ----------------------------
 
     if (!title) {
       alert("Please enter expense title.");
@@ -210,7 +252,9 @@ function App() {
       return;
     }
 
-    /* -------- ADD -------- */
+    // ================================
+    // ADD NEW EXPENSE
+    // ================================
 
     if (!editingExpense) {
       if (amount > balance) {
@@ -243,12 +287,15 @@ function App() {
       return;
     }
 
-    /* -------- EDIT -------- */
+    // ================================
+    // EDIT EXISTING EXPENSE
+    // ================================
 
     const oldAmount = Number(
       editingExpense.amount
     );
 
+    // Return old expense amount first
     const availableBalance =
       balance + oldAmount;
 
@@ -283,7 +330,9 @@ function App() {
     closeModal();
   };
 
-  /* ---------------- DELETE EXPENSE ---------------- */
+  // ================================
+  // DELETE EXPENSE
+  // ================================
 
   const handleDeleteExpense = (expense) => {
     const confirmed = window.confirm(
@@ -300,19 +349,27 @@ function App() {
       )
     );
 
+    // Return deleted expense money
     setBalance(
       (currentBalance) =>
-        currentBalance + Number(expense.amount)
+        currentBalance +
+        Number(expense.amount)
     );
   };
 
-  /* ---------------- HELPERS ---------------- */
+  // ================================
+  // FORMAT MONEY
+  // ================================
 
   const formatAmount = (amount) => {
     return `₹${Number(amount).toLocaleString(
       "en-IN"
     )}`;
   };
+
+  // ================================
+  // FORMAT DATE
+  // ================================
 
   const formatDate = (date) => {
     if (!date) {
@@ -333,6 +390,10 @@ function App() {
     );
   };
 
+  // ================================
+  // CATEGORY ICON
+  // ================================
+
   const getCategoryIcon = (category) => {
     if (category === "Food") {
       return <FaUtensils />;
@@ -347,20 +408,27 @@ function App() {
 
   return (
     <div className="app">
-      {/* HEADER */}
+      {/* ============================
+          HEADER
+      ============================ */}
 
       <header className="header">
         <h1>Expense Tracker</h1>
       </header>
 
       <main className="container">
-        {/* ================= TOP SECTION ================= */}
+
+        {/* ============================
+            SUMMARY SECTION
+        ============================ */}
 
         <section className="summary-section">
+
           {/* WALLET */}
 
           <div className="summary-card wallet-card">
             <div className="summary-content">
+
               <h2>
                 Wallet Balance:{" "}
                 <span className="wallet-value">
@@ -374,6 +442,7 @@ function App() {
               >
                 + Add Income
               </button>
+
             </div>
           </div>
 
@@ -381,6 +450,7 @@ function App() {
 
           <div className="summary-card expense-card">
             <div className="summary-content">
+
               <h2>
                 Expenses:{" "}
                 <span className="expense-value">
@@ -394,18 +464,21 @@ function App() {
               >
                 + Add Expense
               </button>
+
             </div>
           </div>
 
           {/* PIE CHART */}
 
           <div className="pie-wrapper">
+
             {pieData.length > 0 ? (
               <ResponsiveContainer
                 width="100%"
                 height="100%"
               >
                 <PieChart>
+
                   <Pie
                     data={pieData}
                     dataKey="value"
@@ -437,6 +510,7 @@ function App() {
                       formatAmount(value)
                     }
                   />
+
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -446,6 +520,7 @@ function App() {
             )}
 
             <div className="chart-legend">
+
               {CATEGORIES.map((category) => (
                 <div
                   className="legend-item"
@@ -464,21 +539,28 @@ function App() {
                   <span>{category}</span>
                 </div>
               ))}
+
             </div>
+
           </div>
         </section>
 
-        {/* ================= BOTTOM SECTION ================= */}
+        {/* ============================
+            CONTENT
+        ============================ */}
 
         <section className="content-grid">
+
           {/* RECENT TRANSACTIONS */}
 
           <div className="transactions-section">
+
             <h2 className="section-title">
               Recent Transactions
             </h2>
 
             <div className="transactions-container">
+
               {expenses.length === 0 ? (
                 <div className="no-transactions">
                   No transactions!
@@ -489,7 +571,9 @@ function App() {
                     className="transaction"
                     key={expense.id}
                   >
+
                     <div className="transaction-left">
+
                       <div className="category-icon">
                         {getCategoryIcon(
                           expense.category
@@ -497,6 +581,7 @@ function App() {
                       </div>
 
                       <div className="transaction-info">
+
                         <h3>
                           {expense.title}
                         </h3>
@@ -506,10 +591,13 @@ function App() {
                             expense.date
                           )}
                         </p>
+
                       </div>
+
                     </div>
 
                     <div className="transaction-right">
+
                       <span className="transaction-amount">
                         {formatAmount(
                           expense.amount
@@ -537,21 +625,26 @@ function App() {
                       >
                         <FaEdit />
                       </button>
+
                     </div>
+
                   </div>
                 ))
               )}
+
             </div>
           </div>
 
           {/* TOP EXPENSES */}
 
           <div className="top-expenses-section">
+
             <h2 className="section-title">
               Top Expenses
             </h2>
 
             <div className="bar-chart-container">
+
               <ResponsiveContainer
                 width="100%"
                 height="100%"
@@ -566,6 +659,7 @@ function App() {
                     bottom: 10,
                   }}
                 >
+
                   <CartesianGrid
                     strokeDasharray="3 3"
                     horizontal={false}
@@ -601,42 +695,54 @@ function App() {
                     ]}
                     barSize={18}
                   />
+
                 </BarChart>
               </ResponsiveContainer>
+
             </div>
           </div>
+
         </section>
       </main>
 
-      {/* ================= BALANCE MODAL ================= */}
+      {/* ============================
+          BALANCE MODAL
+      ============================ */}
 
       {modalType === "balance" && (
         <ModalOverlay onClose={closeModal}>
+
           <BalanceForm
             onSubmit={handleAddBalance}
             onCancel={closeModal}
           />
+
         </ModalOverlay>
       )}
 
-      {/* ================= EXPENSE MODAL ================= */}
+      {/* ============================
+          EXPENSE MODAL
+      ============================ */}
 
       {modalType === "expense" && (
         <ModalOverlay onClose={closeModal}>
+
           <ExpenseForm
             expense={editingExpense}
             onSubmit={handleExpenseSubmit}
             onCancel={closeModal}
           />
+
         </ModalOverlay>
       )}
+
     </div>
   );
 }
 
-/* =========================================================
-   MODAL
-========================================================= */
+// ======================================================
+// MODAL OVERLAY
+// ======================================================
 
 function ModalOverlay({
   children,
@@ -647,12 +753,14 @@ function ModalOverlay({
       className="modal-overlay"
       onMouseDown={onClose}
     >
+
       <div
         className="modal-container"
         onMouseDown={(event) =>
           event.stopPropagation()
         }
       >
+
         <button
           className="modal-close"
           onClick={onClose}
@@ -662,14 +770,16 @@ function ModalOverlay({
         </button>
 
         {children}
+
       </div>
+
     </div>
   );
 }
 
-/* =========================================================
-   BALANCE FORM
-========================================================= */
+// ======================================================
+// BALANCE FORM
+// ======================================================
 
 function BalanceForm({
   onSubmit,
@@ -679,7 +789,6 @@ function BalanceForm({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     onSubmit(amount);
   };
 
@@ -688,14 +797,17 @@ function BalanceForm({
       className="modal-form"
       onSubmit={handleSubmit}
     >
+
       <h2>Add Balance</h2>
 
       <div className="form-group">
+
         <label htmlFor="incomeAmount">
           Income Amount
         </label>
 
         <div className="input-with-icon">
+
           <FaRupeeSign />
 
           <input
@@ -707,13 +819,15 @@ function BalanceForm({
             onChange={(event) =>
               setAmount(event.target.value)
             }
-            placeholder="Enter amount"
+            placeholder="Income Amount"
             autoFocus
           />
+
         </div>
       </div>
 
       <div className="modal-actions">
+
         <button
           type="submit"
           className="primary-button income-submit"
@@ -728,14 +842,16 @@ function BalanceForm({
         >
           Cancel
         </button>
+
       </div>
+
     </form>
   );
 }
 
-/* =========================================================
-   EXPENSE FORM
-========================================================= */
+// ======================================================
+// EXPENSE FORM
+// ======================================================
 
 function ExpenseForm({
   expense,
@@ -744,7 +860,11 @@ function ExpenseForm({
 }) {
   const [formData, setFormData] = useState({
     title: expense?.title || "",
-    amount: expense?.amount || "",
+
+    // IMPORTANT:
+    // Cypress expects name="price"
+    price: expense?.amount || "",
+
     category: expense?.category || "",
     date: expense?.date || "",
   });
@@ -760,7 +880,6 @@ function ExpenseForm({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     onSubmit(formData);
   };
 
@@ -769,6 +888,7 @@ function ExpenseForm({
       className="modal-form"
       onSubmit={handleSubmit}
     >
+
       <h2>
         {expense
           ? "Edit Expense"
@@ -776,9 +896,11 @@ function ExpenseForm({
       </h2>
 
       <div className="form-grid">
+
         {/* TITLE */}
 
         <div className="form-group">
+
           <label htmlFor="title">
             Title
           </label>
@@ -791,30 +913,34 @@ function ExpenseForm({
             onChange={handleChange}
             placeholder="Title"
           />
+
         </div>
 
-        {/* AMOUNT */}
+        {/* PRICE */}
 
         <div className="form-group">
-          <label htmlFor="amount">
+
+          <label htmlFor="price">
             Price
           </label>
 
           <input
-            id="amount"
-            name="amount"
+            id="price"
+            name="price"
             type="number"
             min="1"
             step="0.01"
-            value={formData.amount}
+            value={formData.price}
             onChange={handleChange}
             placeholder="Price"
           />
+
         </div>
 
         {/* CATEGORY */}
 
         <div className="form-group">
+
           <label htmlFor="category">
             Category
           </label>
@@ -825,26 +951,28 @@ function ExpenseForm({
             value={formData.category}
             onChange={handleChange}
           >
+
             <option value="">
               Select category
             </option>
 
-            {CATEGORIES.map(
-              (category) => (
-                <option
-                  value={category}
-                  key={category}
-                >
-                  {category}
-                </option>
-              )
-            )}
+            {CATEGORIES.map((category) => (
+              <option
+                value={category}
+                key={category}
+              >
+                {category}
+              </option>
+            ))}
+
           </select>
+
         </div>
 
         {/* DATE */}
 
         <div className="form-group">
+
           <label htmlFor="date">
             Date
           </label>
@@ -856,10 +984,13 @@ function ExpenseForm({
             value={formData.date}
             onChange={handleChange}
           />
+
         </div>
+
       </div>
 
       <div className="modal-actions">
+
         <button
           type="submit"
           className="primary-button expense-submit"
@@ -876,7 +1007,9 @@ function ExpenseForm({
         >
           Cancel
         </button>
+
       </div>
+
     </form>
   );
 }

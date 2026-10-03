@@ -9,6 +9,10 @@
   padding-bottom: 40px;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 .header {
   max-width: 1400px;
   margin: auto;
@@ -21,33 +25,50 @@
   font-weight: 700;
 }
 
+/* =========================
+   CONTAINER
+========================= */
+
 .container {
   width: min(1400px, calc(100% - 32px));
   margin: auto;
 }
 
-/* ================= SUMMARY ================= */
+/* =========================
+   SUMMARY
+========================= */
 
 .summary-section {
   min-height: 170px;
   background: #5b5b5b;
   border-radius: 6px;
   padding: 24px;
+
   display: grid;
-  grid-template-columns: 1fr 1fr 1.1fr;
+  grid-template-columns:
+    1fr
+    1fr
+    1.1fr;
+
   gap: 18px;
   align-items: center;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.35);
+
+  box-shadow:
+    0 3px 5px rgba(0, 0, 0, 0.35);
 }
 
 .summary-card {
   height: 124px;
+
   border-radius: 8px;
   background: #999;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.4);
+
+  box-shadow:
+    0 3px 4px rgba(0, 0, 0, 0.4);
 }
 
 .summary-content {
@@ -56,6 +77,7 @@
 
 .summary-content h2 {
   margin: 0 0 12px;
+
   font-size: 18px;
   font-weight: 500;
 }
@@ -70,14 +92,24 @@
   font-weight: 700;
 }
 
+/* =========================
+   BUTTONS
+========================= */
+
 .income-button,
 .expense-button {
   border: none;
+
   color: #fff;
+
   padding: 8px 18px;
+
   border-radius: 8px;
+
   font-weight: 600;
+
   cursor: pointer;
+
   transition: 0.2s;
 }
 
@@ -99,69 +131,105 @@
   transform: translateY(-1px);
 }
 
-/* ================= PIE ================= */
+/* =========================
+   PIE CHART
+========================= */
 
 .pie-wrapper {
   height: 140px;
+
   min-width: 0;
+
   position: relative;
+
   padding-bottom: 25px;
 }
 
 .empty-chart {
   height: 100%;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   color: #aaa;
+
   font-size: 12px;
 }
 
 .chart-legend {
   position: absolute;
+
   bottom: 0;
   left: 0;
+
   width: 100%;
+
   display: flex;
+
   justify-content: center;
+
   gap: 12px;
+
   flex-wrap: wrap;
+
   font-size: 11px;
 }
 
 .legend-item {
   display: flex;
+
   align-items: center;
+
   gap: 4px;
 }
 
 .legend-color {
   width: 8px;
   height: 8px;
+
   display: inline-block;
 }
 
-/* ================= CONTENT ================= */
+/* =========================
+   CONTENT
+========================= */
 
 .content-grid {
   margin-top: 18px;
+
   display: grid;
-  grid-template-columns: 2fr 1fr;
+
+  grid-template-columns:
+    2fr
+    1fr;
+
   gap: 18px;
 }
 
 .section-title {
   margin: 0 0 7px 6px;
+
   font-size: 18px;
+
   font-style: italic;
+
   font-weight: 700;
 }
+
+/* =========================
+   TRANSACTIONS
+========================= */
 
 .transactions-container,
 .bar-chart-container {
   background: #fff;
+
   color: #444;
+
   border-radius: 6px;
+
   min-height: 145px;
 }
 
@@ -171,20 +239,31 @@
 
 .no-transactions {
   min-height: 125px;
+
   display: flex;
+
   align-items: center;
+
   padding-left: 10px;
+
   color: #555;
+
   font-size: 12px;
 }
 
 .transaction {
   min-height: 58px;
+
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   padding: 8px;
+
   border-bottom: 1px solid #ddd;
+
   gap: 10px;
 }
 
@@ -194,20 +273,29 @@
 
 .transaction-left {
   display: flex;
+
   align-items: center;
+
   gap: 12px;
+
   min-width: 0;
 }
 
 .category-icon {
   width: 32px;
   height: 32px;
+
   background: #eee;
+
   border-radius: 50%;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   color: #555;
+
   flex-shrink: 0;
 }
 
@@ -217,42 +305,65 @@
 
 .transaction-info h3 {
   margin: 0;
+
   font-size: 13px;
+
   font-weight: 500;
+
   color: #333;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
+
   white-space: nowrap;
 }
 
 .transaction-info p {
   margin: 3px 0 0;
+
   color: #999;
+
   font-size: 10px;
 }
 
 .transaction-right {
   display: flex;
+
   align-items: center;
+
   gap: 6px;
+
   flex-shrink: 0;
 }
 
 .transaction-amount {
   color: #f3a500;
+
   font-weight: 700;
+
   font-size: 12px;
 }
+
+/* =========================
+   EDIT / DELETE
+========================= */
 
 .icon-button {
   width: 27px;
   height: 27px;
+
   border: none;
+
   border-radius: 7px;
+
   color: white;
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   cursor: pointer;
 }
 
@@ -268,81 +379,131 @@
   transform: scale(1.06);
 }
 
+/* =========================
+   BAR CHART
+========================= */
+
 .bar-chart-container {
   height: 145px;
+
   padding: 8px;
 }
 
-/* ================= MODAL ================= */
+/* =========================
+   MODAL
+========================= */
 
 .modal-overlay {
   position: fixed;
+
   inset: 0;
-  background: rgba(255, 255, 255, 0.72);
+
+  background:
+    rgba(255, 255, 255, 0.72);
+
   backdrop-filter: blur(2px);
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   z-index: 1000;
+
   padding: 16px;
 }
 
 .modal-container {
   width: min(100%, 500px);
+
   background: #f5f5f5;
+
   color: #222;
+
   border-radius: 9px;
+
   padding: 24px;
+
   position: relative;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.25);
 }
 
 .modal-close {
   position: absolute;
+
   top: 12px;
   right: 12px;
+
   width: 30px;
   height: 30px;
+
   border: none;
+
   background: transparent;
+
   color: #555;
+
   cursor: pointer;
+
   font-size: 16px;
 }
 
 .modal-form h2 {
   margin: 0 0 18px;
+
   font-size: 20px;
 }
 
+/* =========================
+   FORM
+========================= */
+
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+
+  grid-template-columns:
+    1fr
+    1fr;
+
   gap: 12px;
 }
 
 .form-group {
   display: flex;
+
   flex-direction: column;
+
   gap: 6px;
 }
 
 .form-group label {
   font-size: 12px;
+
   color: #666;
+
   font-weight: 600;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
+
   height: 40px;
+
   border: 1px solid #ddd;
+
   background: white;
+
   border-radius: 8px;
+
   padding: 0 12px;
+
   outline: none;
+
   font-size: 13px;
+
   color: #333;
 }
 
@@ -351,15 +512,22 @@
   border-color: #aaa;
 }
 
+/* =========================
+   RUPEE INPUT
+========================= */
+
 .input-with-icon {
   position: relative;
 }
 
 .input-with-icon svg {
   position: absolute;
+
   left: 12px;
   top: 13px;
+
   color: #777;
+
   font-size: 13px;
 }
 
@@ -367,25 +535,38 @@
   padding-left: 30px;
 }
 
+/* =========================
+   MODAL BUTTONS
+========================= */
+
 .modal-actions {
   display: flex;
+
   gap: 10px;
+
   margin-top: 20px;
 }
 
 .primary-button,
 .secondary-button {
   min-height: 40px;
+
   padding: 0 18px;
+
   border: none;
+
   border-radius: 8px;
+
   cursor: pointer;
+
   font-size: 12px;
+
   font-weight: 600;
 }
 
 .primary-button {
   color: white;
+
   flex: 1;
 }
 
@@ -401,20 +582,28 @@
 
 .secondary-button {
   background: #e6e6e6;
+
   color: #444;
 }
 
-/* ================= TABLET ================= */
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 900px) {
   .summary-section {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+      1fr
+      1fr;
   }
 
   .pie-wrapper {
     grid-column: 1 / -1;
+
     width: 100%;
+
     max-width: 300px;
+
     justify-self: center;
   }
 
@@ -427,7 +616,9 @@
   }
 }
 
-/* ================= MOBILE ================= */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 600px) {
   .app {
@@ -448,7 +639,9 @@
 
   .summary-section {
     padding: 10px;
+
     grid-template-columns: 1fr;
+
     gap: 12px;
   }
 
@@ -463,22 +656,27 @@
   .income-button,
   .expense-button {
     padding: 7px 15px;
+
     font-size: 11px;
   }
 
   .pie-wrapper {
     height: 190px;
+
     width: 100%;
+
     max-width: 250px;
   }
 
   .content-grid {
     margin-top: 18px;
+
     gap: 18px;
   }
 
   .section-title {
     font-size: 15px;
+
     margin-left: 3px;
   }
 
@@ -497,6 +695,7 @@
   .icon-button {
     width: 25px;
     height: 25px;
+
     font-size: 10px;
   }
 
@@ -526,7 +725,9 @@
   }
 }
 
-/* ================= VERY SMALL MOBILE ================= */
+/* =========================
+   VERY SMALL MOBILE
+========================= */
 
 @media (max-width: 380px) {
   .transaction-left {
@@ -543,6 +744,7 @@
 
   .chart-legend {
     gap: 7px;
+
     font-size: 9px;
   }
 }

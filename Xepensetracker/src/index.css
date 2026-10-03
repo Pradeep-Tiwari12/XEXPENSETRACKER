@@ -2,7 +2,9 @@ html,
 body,
 #root {
   margin: 0;
+
   min-height: 100%;
+
   width: 100%;
 }
 
@@ -11,6 +13,7 @@ body {
     Arial,
     Helvetica,
     sans-serif;
+
   background: #303030;
 }
 
